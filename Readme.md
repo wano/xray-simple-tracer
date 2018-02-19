@@ -23,7 +23,6 @@ saas1 := CreateTracer(xray_tracer.XRayTracerSetting{
 })
 
 err := saas1.Success()
-assert.NoError(t , err)
 
 parentId := saas1.GetId()
 
@@ -39,9 +38,9 @@ saas2 := CreateTracer(xray_tracer.XRayTracerSetting{
 })
 
 err = saas2.Success()
-assert.NoError(t , err)
+
+// on Fail
 err = saas2.Fail(errors.New(`fail`))
-assert.NoError(t , err)
 
 
 ```
