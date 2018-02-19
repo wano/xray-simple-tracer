@@ -1,4 +1,4 @@
-package xray_tracker
+package xray_tracer
 
 import (
 	//"github.com/aws/aws-sdk-go/aws"
