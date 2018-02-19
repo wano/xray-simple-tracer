@@ -1,4 +1,4 @@
-package xray_tracer
+package xray_tracker
 
 import (
 	"testing"
