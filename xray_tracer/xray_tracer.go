@@ -12,8 +12,6 @@ import (
 	"errors"
 )
 
-type TraceId string
-
 type XRayTracerSetting struct {
 	ServiceName string
 	TraceId string
@@ -26,7 +24,7 @@ type XRayTracerSetting struct {
 	Metadata *map[string]interface{} //segmentの追加データ
 }
 
-func CreateXrayTraceInstance(setting XRayTracerSetting) XRayTrace {
+func CreateTracer(setting XRayTracerSetting) XRayTrace {
 
 	sess, err := session.NewSession()
 	if err != nil {
@@ -71,8 +69,8 @@ func getRandom(i int) string {
 }
 
 type XRayTrace interface {
-	CallOnSuccess() error
-	CallOnFail(error) error
+	Success() error
+	Fail(error) error
 	GetId() string
 }
 
@@ -111,7 +109,7 @@ func (instance *implXrayTrace) GetId() string {
 	return instance.Id
 }
 
-func (instance *implXrayTrace) CallOnSuccess() error {
+func (instance *implXrayTrace) Success() error {
 
 	xrayCliBody := XRayTraceBody{
 		Id : instance.Id,
@@ -143,7 +141,7 @@ func (instance *implXrayTrace) CallOnSuccess() error {
 	return nil
 }
 
-func (instance *implXrayTrace) CallOnFail(err error) error {
+func (instance *implXrayTrace) Fail(err error) error {
 
 	cause := XRayCause{
 		Exceptions : []XRayException{

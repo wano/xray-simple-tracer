@@ -1,7 +1,7 @@
 # xray-simple-tracer
 
 simple wrapper for AWS x-ray by golang.
-you need add trace_id , parent_id manually. 
+you need to add trace_id , parent_id manually. 
 
 ```sh
 
@@ -12,29 +12,35 @@ dep enduore -add github.com/wano/xray-simple-tracer
 ```
 
 ```go
-traceId := xray_tracer.CreateNewTraceId()
 
-sass1Task := xray_tracer.CreateXrayTraceInstance(xray_tracer.XRayTracerSetting{
-	ServiceName : `SaSS-1`,
-	TraceId : traceId,
-})
+	traceId := xray_tracer.CreateNewTraceId()
 
-err := sass1Task.CallOnSuccess()
+	saas1 := CreateTracer(xray_tracer.XRayTracerSetting{
+		ServiceName : `SaaS-1`,
+		TraceId : traceId,
+	})
 
-parentId := sass1Task.GetId()
+	err := saas1.Success()
+	assert.NoError(t , err)
 
-metadata := map[string]interface{}{
-	`inputEvent` : parentId,
-}
+	parentId := saas1.GetId()
 
-sass3Task := xray_tracer.CreateXrayTraceInstance(xray_tracer.XRayTracerSetting{
-	ServiceName : `SaSS-2`,
-	TraceId : traceId,
-	ParentId: &parentId,
-	Metadata: &metadata,
-})
+	metadata := map[string]interface{}{
+		`inputEvent` : parentId,
+	}
 
-err := sass2Task.CallOnSuccess()
+	saas2 := CreateTracer(xray_tracer.XRayTracerSetting{
+		ServiceName : `SaaS-2`,
+		TraceId : traceId,
+		ParentId: &parentId,
+		Metadata: &metadata,
+	})
+
+	err = saas2.Success()
+	assert.NoError(t , err)
+	err = saas2.Fail(errors.New(`fail`))
+	assert.NoError(t , err)
+
 
 ```
 
