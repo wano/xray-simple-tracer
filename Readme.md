@@ -38,4 +38,5 @@ err := sass2Task.CallOnSuccess()
 
 ```
 
+![image](https://user-images.githubusercontent.com/1452731/36366079-d405ea20-158f-11e8-84bc-a0aa12c08197.png)
 
