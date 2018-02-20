@@ -70,7 +70,8 @@ func getRandom(i int) string {
 
 type XRayTrace interface {
 	Success() error
-	Fail(error) error
+	Warn(error) error
+	Fault(error) error
 	GetId() string
 }
 
@@ -141,7 +142,21 @@ func (instance *implXrayTrace) Success() error {
 	return nil
 }
 
-func (instance *implXrayTrace) Fail(err error) error {
+func (instance *implXrayTrace) Fault(err error) error {
+	return instance.fail(err , FAULT)
+}
+
+func (instance *implXrayTrace) Warn(err error) error {
+	return instance.fail(err , WARN)
+}
+
+type FAIL_TYPE int
+const (
+	FAULT FAIL_TYPE = iota
+	WARN
+)
+
+func (instance *implXrayTrace) fail(err error , failType FAIL_TYPE) error {
 
 	cause := XRayCause{
 		Exceptions : []XRayException{
@@ -158,10 +173,15 @@ func (instance *implXrayTrace) Fail(err error) error {
 		StartTime: instance.StartTime,
 		EndTime: time.Now().Unix(),
 		ParentId: instance.XRayTracerSetting.ParentId,
-		Fault: aws.Bool(true),
 		Cause: &cause,
 		Metadata:instance.XRayTracerSetting.Metadata,
 		Annotations: instance.XRayTracerSetting.Annotations,
+	}
+
+	if failType == FAULT {
+		xrayCliBody.Fault = aws.Bool(true)
+	} else {
+		xrayCliBody.Error = aws.Bool(true)
 	}
 
 	marshalBody  , err := json.Marshal(xrayCliBody)
