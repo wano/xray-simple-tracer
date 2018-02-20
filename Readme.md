@@ -40,7 +40,8 @@ saas2 := CreateTracer(xray_tracer.XRayTracerSetting{
 err = saas2.Success()
 
 // on Fail
-err = saas2.Fail(errors.New(`fail`))
+err = saas2.Fault(errors.New(`fail`))
+err = saas2.Warn(errors.New(`fail`))
 
 
 ```
