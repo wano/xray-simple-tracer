@@ -40,7 +40,7 @@ func TestTrace(t *testing.T) {
 
 	err = saas2.Success()
 	assert.NoError(t , err)
-	err = saas2.Fail(errors.New(`fail`))
+	err = saas2.Fault(errors.New(`fail`))
 	assert.NoError(t , err)
 
 }
