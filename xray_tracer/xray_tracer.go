@@ -73,6 +73,7 @@ type XRayTrace interface {
 	Warn(error) error
 	Fault(error) error
 	GetId() string
+	GetTraceId() string
 }
 
 type implXrayTrace struct {
@@ -108,6 +109,10 @@ type XRayException struct {
 
 func (instance *implXrayTrace) GetId() string {
 	return instance.Id
+}
+
+func (instance *implXrayTrace) GetTraceId() string {
+	return instance.XRayTracerSetting.TraceId
 }
 
 func (instance *implXrayTrace) Success() error {
