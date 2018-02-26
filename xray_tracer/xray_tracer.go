@@ -74,6 +74,8 @@ type XRayTrace interface {
 	Fault(error) error
 	GetId() string
 	GetTraceId() string
+	SetTraceId(s string)
+	SetParentId(s string)
 }
 
 type implXrayTrace struct {
@@ -113,6 +115,14 @@ func (instance *implXrayTrace) GetId() string {
 
 func (instance *implXrayTrace) GetTraceId() string {
 	return instance.XRayTracerSetting.TraceId
+}
+
+func (instance *implXrayTrace) SetParentId(s string) {
+	instance.XRayTracerSetting.ParentId = &s
+}
+
+func (instance *implXrayTrace) SetTraceId(s string) {
+	instance.XRayTracerSetting.TraceId = s
 }
 
 func (instance *implXrayTrace) Success() error {
