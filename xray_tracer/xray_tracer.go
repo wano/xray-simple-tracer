@@ -41,7 +41,7 @@ func CreateTracer(setting XRayTracerSetting) XRayTrace {
 	svc := xray.New(sess  , awsConfig)
 	svc.ServiceName = setting.ServiceName
 
-	startTime := time.Now().Unix()
+	startTime := time.Now().UnixNano()
 
 	return &implXrayTrace {
 		xRaySession : svc,
@@ -76,6 +76,7 @@ type XRayTrace interface {
 	GetTraceId() string
 	SetTraceId(s string)
 	SetParentId(s string)
+	GetXRaySession() *xray.XRay
 }
 
 type implXrayTrace struct {
@@ -109,6 +110,10 @@ type XRayException struct {
 	Message string `json:"message"`
 }
 
+func (instance *implXrayTrace) GetXRaySession() *xray.XRay {
+	return instance.xRaySession
+}
+
 func (instance *implXrayTrace) GetId() string {
 	return instance.Id
 }
@@ -132,7 +137,7 @@ func (instance *implXrayTrace) Success() error {
 		TraceId: instance.XRayTracerSetting.TraceId,
 		Name: instance.XRayTracerSetting.ServiceName,
 		StartTime: instance.StartTime,
-		EndTime: time.Now().Unix(),
+		EndTime: time.Now().UnixNano(),
 		ParentId: instance.XRayTracerSetting.ParentId,
 		Metadata:instance.XRayTracerSetting.Metadata,
 		Annotations: instance.XRayTracerSetting.Annotations,
